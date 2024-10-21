@@ -15,7 +15,6 @@ STRUCTURE_PROMPT_TEMPLATE = """
         "headings": [
             {{
             "heading": "Heading 1",
-            "index": 1,
             "subheadings": ["Subheading 1", "Subheading 2"]
             }}
         ]
@@ -46,7 +45,10 @@ CHAPTER_BRIEF_TEMPLATE= """
     Book Genre: {genre}
     
     Chapter Title: {chapter}
+    Chapter Index: {index}
     Headings to be Covered: {headings}
+
+    start with # Chapter <chapter index>: <Chapter Title>
     
     Please provide a markdown-formatted introduction that outlines the main ideas and themes of the chapter. The introduction should capture the essence of what will be discussed, including relevant examples or a narrative, while avoiding any specific mention of the headings or subheadings. Focus on setting the stage for the reader, highlighting the chapter's importance and intriguing aspects without breaking it down into bullet points, as those will be addressed later in detail.
     """

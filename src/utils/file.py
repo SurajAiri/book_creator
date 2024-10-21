@@ -63,7 +63,7 @@ def add_page_break(file_path):
 def save_json(file_path, data):
     with open(file_path, 'w') as f:
         json.dump(data, f, indent=4)
-        print(f"Data saved in {file_path}")
+        # print(f"Data saved in {file_path}")
 
 # load json from file
 def load_json(file_path):

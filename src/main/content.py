@@ -10,12 +10,12 @@ def generate_book_introduction(llm,context, genre, data):
     t = book_introduction_prompt.format(context=context, genre=genre, data=data)
     return llm(t)
 
-def generate_book_chapter(llm,context,genre,chapter,headings):
+def generate_book_chapter(llm,context,genre,chapter,chapter_index,headings):
     chapter_brief_template = CHAPTER_BRIEF_TEMPLATE
 
-    chapter_prompt = PromptTemplate(input_variables=["context","genre","chapter","headings"], template=chapter_brief_template)
+    chapter_prompt = PromptTemplate(input_variables=["context","index","genre","chapter","headings"], template=chapter_brief_template)
 
-    t = chapter_prompt.format(context=context, genre=genre, chapter=chapter, headings=headings,)
+    t = chapter_prompt.format(context=context, genre=genre, chapter=chapter,index=chapter_index, headings=headings,)
     return llm(t)
 
 
