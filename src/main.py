@@ -1,5 +1,5 @@
-from main.book_topics import generate_book_structure
-from main.content import *
+from lib.book_topics import generate_book_structure
+from lib.content import *
 from langchain.llms import Ollama
 from utils.parser import parse_json
 from utils.file import *
