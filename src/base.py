@@ -60,6 +60,7 @@ class BookCreator:
                 if progress_listener:
                     progress_listener("Failed to create book structure after retries.")
                 exit()
+        return data
 
     def create_book(self, book_context, book_genre, book_name, progress_listener=None):
         """
@@ -93,7 +94,7 @@ class BookCreator:
 
         # Load book structure
         if not os.path.exists(book_structure_path):
-            self.create_book_structure( book_context, book_genre, book_structure_path, progress_listener=progress_listener)
+            data = self.create_book_structure( book_context, book_genre, book_structure_path, progress_listener=progress_listener)
         else:
             data = load_json(book_structure_path)
 
