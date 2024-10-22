@@ -1,18 +1,45 @@
-
+import argparse
 from langchain_community.llms import Ollama
 from base import BookCreator
 
+# Function to handle progress updates
 def progress_listener(message, progress=None):
     print(message)
 
-# Initialize the Ollama model
-model = Ollama(model='phi3', temperature=0.7)
+def main(book_context, book_genre, book_name, output_dir, temperature):
+    # Initialize the Ollama model with the specified temperature
+    model = Ollama(model='phi3', temperature=temperature)
+    
+    # Initialize the BookCreator with the given model and output directory
+    book_creator = BookCreator(model, output_dir=output_dir)
 
-book_creator = BookCreator(model,output_dir="../output/")
+    # Call the create_book method with the provided arguments
+    book_creator.create_book(
+        book_context=book_context,
+        book_genre=book_genre,
+        book_name=book_name,
+        progress_listener=progress_listener
+    )
 
-book_creator.create_book(
-    book_context="A book about various techniques used in NLP and their applications for beginners.",
-    book_genre="Educational",
-    book_name="Basic NLP Techniques",
-    progress_listener=progress_listener
-)
+if __name__ == "__main__":
+    # Set up argument parsing
+    parser = argparse.ArgumentParser(description="Generate a book using NLP techniques.")
+
+    # Define the arguments
+    parser.add_argument('-c','--book_context', type=str, required=True, help='*Context or theme of the book')
+    parser.add_argument('-g','--book_genre', type=str, required=True, help='*Genre of the book')
+    parser.add_argument('-n','--book_name', type=str, required=True, help='*Title of the book')
+    parser.add_argument('-o','--output_dir', type=str, default="output/", help='Directory to save the generated book (default: output/)')
+    parser.add_argument('-t','--temperature', type=float, default=0.7, help='Temperature setting for the model (default: 0.7)')
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Call the main function with parsed arguments
+    main(
+        book_context=args.book_context,
+        book_genre=args.book_genre,
+        book_name=args.book_name,
+        output_dir=args.output_dir,
+        temperature=args.temperature
+    )
