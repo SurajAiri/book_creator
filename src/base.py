@@ -38,32 +38,30 @@ class BookCreator:
         save_json(progress_path, progress_data)
 
     # Recursive retries as LLM sometimes returns invalid json
-    def create_book_structure(self, book_context, book_genre, book_structure_path, retry=0, progress_listener=None):
-        try:
-            if progress_listener:
-                progress_listener("Book structure generation started.")
-            
-            book_structure = generate_book_structure(self.model, book_context, book_genre, self.structure_prompt)
-            # Parse json
-            data = parse_json(book_structure)
-            save_json(book_structure_path, data)
-            
-            if progress_listener:
-                progress_listener("Book structure generation completed.")
-        
-        except Exception as e:
-            print(f"Invalid Json Received from LLM\n{e}")
-            if retry < self.BOOK_STRUCTURE_RETRY_LIMIT:
-                retry += 1
+    # Replace recursion with a loop to avoid stack overflow
+    def create_book_structure(self, book_context, book_genre, book_structure_path, progress_listener=None):
+        for retry in range(self.BOOK_STRUCTURE_RETRY_LIMIT):
+            try:
                 if progress_listener:
-                    progress_listener(f"Retrying book structure generation. Retry Count: {retry}")
-                self.create_book_structure(self.model, book_context, book_genre, book_structure_path, retry, progress_listener)
-            else:
-                print("Failed to create book structure. Exiting.")
+                    progress_listener("Book structure generation started.")
+                
+                book_structure = generate_book_structure(self.model, book_context, book_genre, self.structure_prompt)
+                data = parse_json(book_structure)
+                save_json(book_structure_path, data)
+
                 if progress_listener:
-                    progress_listener("Failed to create book structure after retries.")
-                exit()
-        return data
+                    progress_listener("Book structure generation completed.")
+                return data
+
+            except Exception as e:
+                print(f"Invalid Json Received from LLM on attempt {retry + 1}: {e}")
+                if retry == self.BOOK_STRUCTURE_RETRY_LIMIT - 1:
+                    if progress_listener:
+                        progress_listener(f"Failed to create book structure after {self.BOOK_STRUCTURE_RETRY_LIMIT} attempts.")
+                    raise Exception("Failed to create book structure after retries.")
+                if progress_listener:
+                    progress_listener(f"Retrying book structure generation. Retry Count: {retry + 1}")
+
 
     def create_book(self, book_context, book_genre, book_name, progress_listener=None):
         """
@@ -80,6 +78,7 @@ class BookCreator:
         book_path = self.output_dir + book_name + ".docx"
         book_structure_path = self.output_dir + book_name + ".json"
         book_progress_path = self.output_dir + "." + book_name + "_progress.json"
+        print(f"Book Path: {book_path}")
 
         # Notify progress listener
         if progress_listener:
@@ -97,7 +96,8 @@ class BookCreator:
 
         # Load book structure
         if not os.path.exists(book_structure_path):
-            data = self.create_book_structure( book_context, book_genre, book_structure_path, progress_listener=progress_listener)
+            data = self.create_book_structure(book_context, book_genre, book_structure_path, progress_listener=progress_listener)
+            
         else:
             data = load_json(book_structure_path)
 
