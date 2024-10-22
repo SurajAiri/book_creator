@@ -17,6 +17,9 @@ class BookCreator:
         self.model = model
         self.output_dir = output_dir
 
+    def update_model(self,model):
+        self.model = model
+
     def update_prompt(self, structure_prompt=None, intro_prompt=None, chapter_prompt=None, heading_prompt=None, subheading_prompt=None):
         if structure_prompt:
             self.structure_prompt = structure_prompt
