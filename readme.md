@@ -5,7 +5,7 @@ This project allows you to generate books from scratch by leveraging **LangChain
 ## Key Features
 
 - **Book Creation from Scratch:** Generate books by specifying just a few parameters like genre, context, and title.
-- **Local LLMs:** Uses local models, such as `phi3` from **Ollama**, ensuring fast and secure book generation without relying on external APIs.
+- **Local LLMs:** Uses local models, such as `phi3.5` from **Ollama**, ensuring fast and secure book generation without relying on external APIs.
 - **Customizable Parameters:** Control the creative output by adjusting parameters like `temperature` to influence the creativity of the generated content.
 
 ## Requirements

@@ -39,13 +39,13 @@ class BookCreator:
 
     # Recursive retries as LLM sometimes returns invalid json
     # Replace recursion with a loop to avoid stack overflow
-    def create_book_structure(self, book_context, book_genre, book_structure_path, progress_listener=None):
+    def create_book_structure(self,book_title, book_context, book_genre, book_structure_path, progress_listener=None):
         for retry in range(self.BOOK_STRUCTURE_RETRY_LIMIT):
             try:
                 if progress_listener:
                     progress_listener("Book structure generation started.")
                 
-                book_structure = generate_book_structure(self.model, book_context, book_genre, self.structure_prompt)
+                book_structure = generate_book_structure(self.model,book_title, book_context, book_genre, self.structure_prompt)
                 data = parse_json(book_structure)
                 save_json(book_structure_path, data)
 
@@ -101,7 +101,7 @@ class BookCreator:
 
         # Load book structure
         if not os.path.exists(book_structure_path):
-            data = self.create_book_structure(book_context, book_genre, book_structure_path, progress_listener=progress_listener)
+            data = self.create_book_structure(book_name,book_context, book_genre, book_structure_path, progress_listener=progress_listener)
             
         else:
             data = load_json(book_structure_path)
@@ -121,7 +121,7 @@ class BookCreator:
         if not progress_data["intro_generated"]:
             self.handle_progress(progress_listener,"Generating book introduction.",progress_data)
             
-            book_intro = generate_book_introduction(self.model, book_context, book_genre, data, self.intro_prompt)
+            book_intro = generate_book_introduction(self.model,book_name, book_context, book_genre, data, self.intro_prompt)
             save_docx(book_path, book_intro.strip())
             add_page_break(book_path)
             self.update_progress(book_progress_path, progress_data, intro_generated=True)
@@ -137,7 +137,7 @@ class BookCreator:
 
             # Generate chapter introduction only if resuming from a new chapter
             if progress_data['heading_index'] == -1:
-                chapter_intro = generate_book_chapter(self.model, book_context, book_genre, chapter_title, chapter_index + 1, chapter_headings, self.chapter_prompt)
+                chapter_intro = generate_book_chapter(self.model,book_name, book_context, book_genre, chapter_title, chapter_index + 1, chapter_headings, self.chapter_prompt)
                 save_docx(book_path, chapter_intro.strip())
 
                 # Save progress after chapter intro generation
@@ -154,7 +154,7 @@ class BookCreator:
                     
 
                 if progress_data['subheading_index'] == -1:
-                    heading_content = generate_book_heading(self.model, book_context, book_genre, chapter_title, heading_title, heading_index + 1, sub_headings, self.heading_prompt)
+                    heading_content = generate_book_heading(self.model,book_name, book_context, book_genre, chapter_title, heading_title, heading_index + 1, sub_headings, self.heading_prompt)
                     save_docx(book_path, heading_content.strip())
 
                     # Save progress after heading generation
@@ -168,7 +168,7 @@ class BookCreator:
                     sub_heading = sub_headings[subheading_index]
                     self.handle_progress(progress_listener,f"Generating content for subheading: {sub_heading}",progress_data)
 
-                    sub_heading_content = generate_book_subheading(self.model, book_context, book_genre, chapter_title, heading_title, heading_index, sub_heading, self.subheading_prompt)
+                    sub_heading_content = generate_book_subheading(self.model,book_name, book_context, book_genre, chapter_title, heading_title, heading_index, sub_heading, self.subheading_prompt)
                     save_docx(book_path, sub_heading_content.strip())
 
                     # Update progress after subheading generation

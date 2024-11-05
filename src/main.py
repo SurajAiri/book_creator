@@ -29,7 +29,7 @@ if __name__ == "__main__":
     parser.add_argument('-c','--book_context', type=str, required=True, help='*Context or theme of the book')
     parser.add_argument('-g','--book_genre', type=str, required=True, help='*Genre of the book')
     parser.add_argument('-n','--book_name', type=str, required=True, help='*Title of the book')
-    parser.add_argument('-m','--model-name',type=str,default='phi3',help='Name of the model to use (default: phi3)')
+    parser.add_argument('-m','--model-name',type=str,default='phi3.5',help='Name of the model to use (default: phi3.5)')
     parser.add_argument('-o','--output_dir', type=str, default="output/", help='Directory to save the generated book (default: output/)')
     parser.add_argument('-t','--temperature', type=float, default=0.7, help='Temperature setting for the model (default: 0.7)')
 
