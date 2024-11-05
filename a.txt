@@ -1,4 +1,0 @@
-Developed a platform that generates entire books using locally installed Large Language Models (LLMs) based on user-defined genre and context.
-Integrated LangChain for natural language processing and implemented both CLI and Streamlit GUI options for book generation.
-Allowed users to customize the LLM model used, supporting any locally installed models with adaptable parameters such as temperature for content creativity.
-Managed project dependencies with Poetry and set up environments using Conda for seamless execution.

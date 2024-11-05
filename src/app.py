@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain_community.llms import Ollama
+from langchain_ollama import ChatOllama
 from base import BookCreator
 from lib.prompt_template import *
 import subprocess
@@ -47,7 +47,7 @@ book_name = st.text_input("Book Name", "NLP Techniques")
 output_dir = st.text_input("Output Directory", "../output/")
 
 # Initialize the model and book creator
-model = Ollama(model=selected_model, temperature=0.7)
+model = ChatOllama(model=selected_model, temperature=0.7)
 book_creator = BookCreator(model, output_dir=output_dir)  
 
 # Initialize default prompt values
